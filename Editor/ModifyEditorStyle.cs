@@ -23,7 +23,8 @@ public class ModifyEditorStyle
     public static readonly string[] AvailableFontList = new string[]
     {
         "Lucida Grande",
-        "MS PGothic",
+        DefaultFontName,
+        "MS UI Gothic",
     };
 
     //
@@ -135,31 +136,6 @@ public class ModifyEditorStyle
         get
         {
             return AvailableFontList;
-
-            //IEnumerable<string> f()
-            //{
-            //    foreach (string fn in Font.GetOSInstalledFontNames()) // if list all. very many.
-            //    {
-            //        yield return fn;
-            //        //char c = fn.ToLower()[0];
-            //        //switch (c)
-            //        //{
-            //        //    case 'g':
-            //        //    {
-            //        //        yield return fn;
-            //        //        break;
-            //        //    }
-            //        //    case 'm':
-            //        //    {
-            //        //        yield return fn;
-            //        //        break;
-            //        //    }
-            //        //    default:
-            //        //        break;
-            //        //}
-            //    }
-            //}
-            //return f().ToArray();
         }
     }
 
@@ -357,7 +333,7 @@ public class ModifyEditorStyle
     {
         if (!FontChangeIsEnabled)
         {
-            ForDebug.WriteStylesAll();
+            StyleManager.WriteStylesAll();
             return;
         }
 
@@ -376,19 +352,24 @@ public class ModifyEditorStyle
         Font_Bold = Font.CreateDynamicFontFromOSFont(boldFontName, FontSize);
         Fomt_SmaollBold = Font.CreateDynamicFontFromOSFont(boldFontName, SmallFontSize);
 
-        GUISkin skin = GUI.skin;
+        //GUISkin skin = GUI.skin;
         //Debug.Log($"- : {skin.font?.name} {skin.font?.fontSize}");
-        skin.font = Font_Normal;
-        GUI.skin = skin; //SetDefaultFont activated on this setter
+        //skin.font = Font_Normal;
+        //GUI.skin = skin; //SetDefaultFont activated on this setter
 
+
+        EditorStyles style = null;
         //EditorStyles static was pulled from s_Current which was populated from `EditorGUIUtility.GetBuiltinSkin` which we cannot interfere.
         //s_Current is internal and therefore we need to reflect to change the font. All other styles are accessible except the fonts.
-        var eType = typeof(EditorStyles);
-        var es = (EditorStyles)(eType.GetField("s_Current", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null));
-        eType.GetField("m_StandardFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Font_Normal);
-        eType.GetField("m_BoldFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Font_Bold);
-        eType.GetField("m_MiniFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Font_Small);
-        eType.GetField("m_MiniBoldFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Fomt_SmaollBold);
+        //Type eType = typeof(EditorStyles);
+
+        //Debug.Log(EditorStyles.standardFont.name);
+
+        //var es = (EditorStyles)(eType.GetField("s_Current", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null));
+        //eType.GetField("m_StandardFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Font_Normal);
+        //eType.GetField("m_BoldFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Font_Bold);
+        //eType.GetField("m_MiniFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Font_Small);
+        //eType.GetField("m_MiniBoldFont", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(es, Fomt_SmaollBold);
 
         //We should not override font where there's no font in the first place, because that will make the fallback switch
         //to bold on override not working.
@@ -402,28 +383,28 @@ public class ModifyEditorStyle
 
         //foreach (GUIStyle x in EditorStylesGUIStyles)
         //{
-            //if (x != null)
-            //{
-            //    if (x.font != null)
-            //    {
-            //        Debug.Log($"{x.name} : {x.font.name} {x.font.fontSize} {x.fontSize} {x.padding}");
-            //    }
-            //    else
-            //    {
-            //        Debug.Log($"{x.name} : NO FONT {x.fontSize} {x.padding}");
-            //    }
-            //}
+        //if (x != null)
+        //{
+        //    if (x.font != null)
+        //    {
+        //        Debug.Log($"{x.name} : {x.font.name} {x.font.fontSize} {x.fontSize} {x.padding}");
+        //    }
+        //    else
+        //    {
+        //        Debug.Log($"{x.name} : NO FONT {x.fontSize} {x.padding}");
+        //    }
+        //}
 
-            //x.fontSize = 15;
-            //x.fixedHeight = 20;
-            //x.padding.top = 4;
-            //x.padding.bottom = 5;
+        //x.fontSize = 15;
+        //x.fixedHeight = 20;
+        //x.padding.top = 4;
+        //x.padding.bottom = 5;
 
-            //RectOffset margin = x.margin;
-            ////margin.left = 5;
-            ////margin.right = 5;
-            //margin.top = 6;
-            //margin.bottom = 6;
+        //RectOffset margin = x.margin;
+        ////margin.left = 5;
+        ////margin.right = 5;
+        //margin.top = 6;
+        //margin.bottom = 6;
         //}
 
         //foreach (GUIStyle x in GetNeedsPaddingStyles)
@@ -439,15 +420,15 @@ public class ModifyEditorStyle
         //}
 
 
-        // ComboBox like control
-        Skin.Style("MiniPopup", style =>
-        {
-            style.font = Font_Normal;
-            style.fixedHeight = 21;
-            style.margin.top = 3;
-            style.margin.bottom = 8;
-            style.padding.bottom = 6;
-        });
+        //// ComboBox like control
+        //Skin.Style("MiniPopup", style =>
+        //{
+        //    style.font = Font_Normal;
+        //    style.fixedHeight = 21;
+        //    style.margin.top = 3;
+        //    style.margin.bottom = 8;
+        //    style.padding.bottom = 6;
+        //});
 
         foreach (GUIStyle x in EditorStylesBig)
         {
@@ -462,7 +443,7 @@ public class ModifyEditorStyle
                 //     Debug.Log($"{x.name} : NO FONT {x.fontSize} {x.padding}");
                 // }
 
-                x.fontSize = BigFontSize;
+                //x.fontSize = BigFontSize;
             }
         }
 
@@ -479,7 +460,7 @@ public class ModifyEditorStyle
                 //     Debug.Log($"SMALL {x.name} : NO FONT {x.fontSize} {x.padding}");
                 // }
 
-                x.fontSize = SmallFontSize;
+                //x.fontSize = SmallFontSize;
             }
         }
 
@@ -514,7 +495,7 @@ public class ModifyEditorStyle
         // }
         // Debug.Log($"Modified");
 
-        ForDebug.WriteStylesAll();
+        //ForDebug.WriteStylesAll();
     }
 
     public static bool IsExecModify { get; set; }
@@ -553,11 +534,11 @@ public class ModifyEditorStyle
         }
     }
 
-    public static class ForDebug
+    public static class StyleManager
     {
-        public static IEnumerable<GUIStyle> GetSkinGuiStyles()
+        public static IEnumerable<GUIStyle> GetAllStyles()
         {
-            var enumerator = GUI.skin.GetEnumerator();
+            IEnumerator enumerator = GUI.skin.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 if (enumerator.Current is GUIStyle style)
@@ -567,7 +548,7 @@ public class ModifyEditorStyle
             }
         }
 
-        public static IEnumerable<GUIStyle> GetGuiStyleMembersAll()
+        public static IEnumerable<GUIStyle> GetEditorStyles()
         {
             yield return EditorStyles.objectFieldThumb;
             yield return EditorStyles.objectFieldMiniThumb;
@@ -587,7 +568,7 @@ public class ModifyEditorStyle
             yield return EditorStyles.inspectorDefaultMargins;
             yield return EditorStyles.inspectorFullWidthMargins;
             yield return EditorStyles.objectField;
-            yield return EditorStyles.helpBox;
+            yield return EditorStyles.popup;
             yield return EditorStyles.numberField;
             yield return EditorStyles.label;
             yield return EditorStyles.miniLabel;
@@ -597,9 +578,10 @@ public class ModifyEditorStyle
             yield return EditorStyles.centeredGreyMiniLabel;
             yield return EditorStyles.wordWrappedMiniLabel;
             yield return EditorStyles.wordWrappedLabel;
+            yield return EditorStyles.linkLabel;
             yield return EditorStyles.whiteLabel;
+            yield return EditorStyles.helpBox;
             yield return EditorStyles.whiteMiniLabel;
-            yield return EditorStyles.whiteLargeLabel;
             yield return EditorStyles.whiteBoldLabel;
             yield return EditorStyles.radioButton;
             yield return EditorStyles.miniButton;
@@ -610,36 +592,36 @@ public class ModifyEditorStyle
             yield return EditorStyles.textField;
             yield return EditorStyles.textArea;
             yield return EditorStyles.miniTextField;
-            yield return EditorStyles.popup;
+            yield return EditorStyles.whiteLargeLabel;
             yield return EditorStyles.toolbarSearchField;
         }
 
         public static void WriteStylesAll()
         {
-            //const string path = @"d:\log.log";
+            const string path = @"d:\log.log";
 
-            //if (File.Exists(path))
-            //{
-            //    File.Delete(path);
-            //}
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
 
-            //using (StreamWriter sw = File.CreateText(path))
-            //{
-            //    foreach (GUIStyle style in GetSkinGuiStyles())
-            //    {
-            //        sw.WriteLine(Convert(style));
-            //    }
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                foreach (GUIStyle style in GetAllStyles())
+                {
+                    sw.WriteLine(ToString(style));
+                }
 
-            //    sw.WriteLine("------------------------------------------------");
+                sw.WriteLine("------------------------------------------------");
 
-            //    foreach (GUIStyle style in GetGuiStyleMembersAll())
-            //    {
-            //        sw.WriteLine(Convert(style));
-            //    }
-            //}
+                foreach (GUIStyle style in GetEditorStyles())
+                {
+                    sw.WriteLine(ToString(style));
+                }
+            }
         }
 
-        public static string Convert(GUIStyle style)
+        public static string ToString(GUIStyle style)
         {
             if (style.name == "ToolbarTextField")
             {
@@ -657,58 +639,64 @@ public class ModifyEditorStyle
         }
     }
 
-    public static class Skin
-    {
-        public static void Style(string name, Action<GUIStyle> action)
-        {
-            GUIStyle style = GUI.skin.FindStyle(name);
-            action(style);
-        }
-
-        public static void Style(IEnumerable<string> names, Action<GUIStyle> action)
-        {
-            foreach (string name in names)
-            {
-                Style(name, action);
-            }
-        }
-    }
-
     public static class AutoFontFixFunction
     {
         public static void UpdateAll()
         {
-            foreach (GUIStyle style in ForDebug.GetSkinGuiStyles())
+            foreach (GUIStyle style in StyleManager.GetAllStyles())
+            //foreach (GUIStyle style in StyleManager.GetEditorStyles()) // ‚±‚Á‚¿‚ÍŒø‚©‚È‚¢
             {
-                bool? isBold = style.font?.name.ToLower().Contains("bold");
+                //bool? isBold = style.font?.name.ToLower().Contains("bold");
 
-                if (style.font == null)
-                {
-                    style.font = Font_Normal;
-                    style.fontSize = Font_Normal.fontSize;
-                }
+                //if (style.font == null)
+                //{
+                //    style.font = Font_Normal;
+                //    style.fontSize = Font_Normal.fontSize;
+                //}
 
-                switch (style.font.fontSize)
-                {
-                    case 9:
-                    {
-                        style.font = Font_Small;
-                        style.fontSize = Font_Small.fontSize;
-                        break;
-                    }
-                    case 11:
-                    {
-                        style.font = Font_Normal;
-                        style.fontSize = Font_Normal.fontSize;
-                        break;
-                    }
-                    case 12:
-                    {
-                        style.font = Font_Big;
-                        style.fontSize = Font_Big.fontSize;
-                        break;
-                    }
-                }
+                //if (style != null && style.font != null)
+                //{
+                //    Debug.Log($"{style.name}={style.font.name}[{style.fontStyle}], {style.fontSize}pt,");
+                //}
+                //else
+                //{
+                //    Debug.Log($"{style.name} style is null.");
+                //}
+
+                //if (style.fontStyle == FontStyle.Bold)
+                //{
+                //    style.font = Font_Big;
+                //    style.fontSize = Font_Big.fontSize;
+                //    style.fontStyle = FontStyle.Normal;
+                //}
+                //else
+                //{
+                style.font = Font_Normal;
+                style.fontSize = Font_Normal.fontSize;
+                style.fontStyle = FontStyle.Normal;
+                //}
+
+                //switch (style.font.fontSize)
+                //{
+                //    case 9:
+                //        {
+                //            style.font = Font_Small;
+                //            style.fontSize = Font_Small.fontSize;
+                //            break;
+                //        }
+                //    case 11:
+                //        {
+                //            style.font = Font_Normal;
+                //            style.fontSize = Font_Normal.fontSize;
+                //            break;
+                //        }
+                //    case 12:
+                //        {
+                //            style.font = Font_Big;
+                //            style.fontSize = Font_Big.fontSize;
+                //            break;
+                //        }
+                //}
             }
         }
     }
